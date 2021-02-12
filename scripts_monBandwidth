@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# https://gitlab.xfce.org/panel-plugins/xfce4-genmon-plugin/-/blob/master/scripts/monBandwidth
+# source: https://gitlab.xfce.org/panel-plugins/xfce4-genmon-plugin/-/blob/master/scripts/monBandwidth
 # edits:
 #    - corrected $i => $if line 10
 #    - simple output mode

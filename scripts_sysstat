@@ -1,5 +1,7 @@
 #!/bin/bash
 #
+# source: https://gitlab.xfce.org/panel-plugins/xfce4-genmon-plugin/-/blob/master/scripts/sysstat
+#
 # display available system resources as padded non-decimal percentage digits
 #   CPU = current cpu usage
 #   MEM = current memory in use percentage

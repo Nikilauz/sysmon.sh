@@ -2,10 +2,10 @@
 
 # source: https://gitlab.xfce.org/panel-plugins/xfce4-genmon-plugin/-/blob/master/scripts/monBandwidth
 # edits:
-#    - corrected $i => $if line 10
+#    - corrected $i => $if  in line 10
 #    - simple output mode
 
-simple_output=true
+simple_output=1
 
 # An example script for the genmon plugin displaying the bandwidth
 # The first parameter passed to the script is the name of the interface
@@ -46,7 +46,7 @@ human_bandwidth () {
 rx=$(human_bandwidth $brx)
 tx=$(human_bandwidth $btx)
 
-if ! [[ simple_output ]]; then
+if ! (( simple_output )); then
     echo "<txt>Rx: $rx - Tx: $tx</txt>"
     echo "<tool>Bandwidth on interface $if</tool>"
 else

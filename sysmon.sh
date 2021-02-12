@@ -2,7 +2,7 @@
 
 # args
 network_adapter=$(echo $@ | grep -E -e "-a .+" | awk '{printf("%s", $2)}')
-as_svg=`if [[ $(echo $@ | grep -e "--svg") ]]; then echo 1; else echo 0; fi`
+as_svg=`if [[ $(echo $@ | grep -e "--no-svg") ]]; then echo 0; else echo 1; fi`
 
 # script location directory
 script_dir=$(dirname ${BASH_SOURCE[0]})
@@ -47,7 +47,8 @@ if (( $as_svg )); then
     svg+="</svg>"
     
     echo $svg > $script_dir/icon.svg
-    echo "<img>$script_dir/icon.svg</img><tool>$text_out</tool>"
+    echo "<img>$script_dir/icon.svg</img><click>xfce4-taskmanager</click>"
 else
     echo "<txt> $text_out </txt>"
 fi
+echo "<tool>$text_out</tool>"

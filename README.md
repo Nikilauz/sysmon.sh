@@ -9,4 +9,7 @@ It uses some of the sample scripts provided by genmon.
 #### options
  - `-a [network interface]` choose a network interface (e.g. via executing `netstat -i`), `eth0` is used if not provided
  - `--no-svg` only textual output
+#### faq
+ - Hover the panel item to see the order of the displayed values.
+ - Currently, only GPU-Utilization monitoring Nvidia-GPU's via `nvidia-smi` is supported, please change the script to your needs or wait for updates to come...
  

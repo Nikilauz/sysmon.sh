@@ -1,5 +1,5 @@
 # sysmon.sh
-A simple system monitoring script for xfce desktops to set as source of [xfce4 gemon panel plugin](https://gitlab.xfce.org/panel-plugins/xfce4-genmon-plugin).  
+A simple system monitoring script for xfce desktops to set as source of [xfce4 genmon panel plugin](https://gitlab.xfce.org/panel-plugins/xfce4-genmon-plugin).  
 It uses some of the sample scripts provided by genmon.
 #### setup
 1. install xfce4-gemon-plugin (apt://xfce4-genmon-plugin)

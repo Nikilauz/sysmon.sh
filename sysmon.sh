@@ -54,8 +54,10 @@ network=`test -d /sys/class/net/$network_adapter && echo 1`
 text=$(echo $@ | grep -c -e "--text")
 no_gpu=$(echo $@ | grep -e "--no-gpu")
 
-# script location directory
-script_dir=$(dirname ${BASH_SOURCE[0]})
+# cache
+cache=`realpath ~/.cache/sysmon`
+mkdir -p $cache
+icon="$cache/icon.svg"
 
 
 # get values
@@ -99,8 +101,8 @@ if ! (( $text )); then
     svg+="</g>"
     svg+="</svg>"
     
-    echo $svg > $script_dir/icon.svg
-    echo "<img>$script_dir/icon.svg</img><click>xfce4-taskmanager</click>"
+    echo $svg > $icon
+    echo "<img>$icon</img><click>xfce4-taskmanager</click>"
 else
     echo "<txt> $text_out </txt>"
 fi

@@ -75,8 +75,8 @@ rx2=`test $network && cat /sys/class/net/$network_adapter/statistics/rx_bytes`
 tx2=`test $network && cat /sys/class/net/$network_adapter/statistics/tx_bytes`
 
 cpu=$(echo $cpu1 $cpu2 | awk -v RS="" '{printf("%d", ($13-$2+$15-$4)*100/($13-$2+$15-$4+$16-$5))}')
-rx=`test $network && human_bandwidth $(($rx2 - $rx1))`
-tx=`test $network && human_bandwidth $(($tx2 - $tx1))`
+rx=`(test $network && human_bandwidth $(($rx2 - $rx1))) || echo " ?"`
+tx=`(test $network && human_bandwidth $(($tx2 - $tx1))) || echo " ?"`
 
 
 # create textual output
@@ -90,7 +90,7 @@ if ! (( $text )); then
     svg="<svg width=\"120\" height=\"30\">"
     svg+="<g fill=\"$color\" font-size=\"12\" font-family=\"$font\">"
     svg+="<text x=\"0\" y=\"15\" textLength=\"50\" lengthAdjust=\"spacingAndGlyphs\">"
-    svg+="<tspan>&#8593;"${tx:-#}"</tspan><tspan x=\"0\" dy=\"13\">&#8595;"${rx:-#}"</tspan>"
+    svg+="<tspan>&#8593;$tx</tspan><tspan x=\"0\" dy=\"13\">&#8595;$rx</tspan>"
     svg+="</text>"
     svg+=`svg_bar 60 $cpu blue`
     svg+=`test $no_gpu || svg_bar 75 $gpu green`

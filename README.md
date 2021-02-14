@@ -12,6 +12,6 @@ It uses some of the [sample scripts](https://gitlab.xfce.org/panel-plugins/xfce4
  - `--no-gpu` disables gpu monitoring
 #### faq
  - Hover the panel item to see the order of the displayed values.
- - If you see '#' in network stats, it means propably that the network interface doesn't exist, try to set it manually via `-a` option (see above).
- - Currently, GPU-Utilization monitoring is supported for Nvidia via `nvidia-smi` (ships with proprietary drivers), for AMD via `aticonfig` (same here) and for Intel via `intel-gpu-tools` (make sure you have installed that one).
+ - If you see '?' in network stats, it means propably that the network interface doesn't exist, try to set it manually via `-a` option (see above).
+ - Currently, GPU utilization monitoring is supported for Nvidia via `nvidia-smi` (ships with proprietary drivers), for AMD via `aticonfig` (same here) and for Intel via `intel-gpu-tools` (make sure you have installed that one).
  

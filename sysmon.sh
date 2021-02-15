@@ -54,10 +54,16 @@ network=`test -d /sys/class/net/$network_adapter && echo 1`
 text=$(echo $@ | grep -c -e "--text")
 no_gpu=$(echo $@ | grep -e "--no-gpu")
 
-# cache
-cache=`realpath ~/.cache/sysmon`
-mkdir -p $cache
-icon="$cache/icon.svg"
+# paths
+icon=`realpath ~/.cache/sysmon`"/icon.svg"
+rc=$(realpath ~/.config/xfce4/panel/genmon-`cat ~/.local/share/sysmon/genmon.txt`.rc)
+
+# check update interval
+if (( `cat $rc | grep "UpdatePeriod" | grep -o -E -e "[0-9]*"` < 1500 )); then
+    xfce4-panel --quit
+    sed -i "s/^UpdatePeriod.*/UpdatePeriod=1500/" $rc
+    xfce4-panel >/dev/null 2>/dev/null &
+fi
 
 
 # get values
@@ -89,16 +95,15 @@ if ! (( $text )); then
     color=$(if [[ $(xfconf-query -lvc xsettings -p /Net/ThemeName | grep -i "dark") ]]; then echo white; else echo black; fi)
     font=$(xfconf-query -lvc xsettings -p /Gtk/FontName | awk '{printf("%s", $2)}')
 
-    svg="<svg width=\"120\" height=\"30\">"
+    svg="<svg width=\"120\" height=\"30\" xmlns=\"http://www.w3.org/2000/svg\">"
     svg+="<g fill=\"$color\" font-size=\"12\" font-family=\"$font\">"
-    svg+="<text x=\"0\" y=\"15\" textLength=\"50\" lengthAdjust=\"spacingAndGlyphs\">"
-    svg+="<tspan>&#8593;$tx</tspan><tspan x=\"0\" dy=\"13\">&#8595;$rx</tspan>"
-    svg+="</text>"
+    svg+="<text x=\"0\" y=\"15\" textLength=\"50\" lengthAdjust=\"spacingAndGlyphs\">&#8593;$tx</text>"
+    svg+="<text x=\"0\" y=\"28\" textLength=\"50\" lengthAdjust=\"spacingAndGlyphs\">&#8595;$rx</text>"
+    svg+="</g>"
     svg+=`svg_bar 60 $cpu blue`
     svg+=`test $no_gpu || svg_bar 75 $gpu green`
     svg+=`svg_bar 90 $ram orange`
     svg+=`svg_bar 105 $swap yellow`
-    svg+="</g>"
     svg+="</svg>"
     
     echo $svg > $icon

@@ -2,10 +2,7 @@
 A simple system monitoring script for xfce desktops to set as source of [xfce4 genmon panel plugin](https://gitlab.xfce.org/panel-plugins/xfce4-genmon-plugin).  
 It uses some of the [sample scripts](https://gitlab.xfce.org/panel-plugins/xfce4-genmon-plugin/-/blob/master/scripts/) provided by genmon (sysstat, monBandwidth).
 #### setup
-1. download file `sysmon.sh`
-2. [install `xfce4-genmon-plugin`](http://polemix.dx.am/genmon)
-3. execute `xfce4-panel --add=genmon`
-4. right-click on the newly added item in your panel and set the command path property to your `sysmon.sh` script
+Simply execute `wget -qO - https://raw.githubusercontent.com/Nikilauz/sysmon.sh/main/sysmon_install.sh | bash` in a terminal.
 #### options
  - `-a [network interface]` choose a network interface (e.g. via executing `netstat -i`), `eth0` is used if not provided
  - `--text` only textual output, no bars

@@ -48,18 +48,19 @@ human_bandwidth () {
 
 
 # args
-network_adapter=$(echo $@ | grep -E -e "-a .+" | awk '{printf("%s", $2)}')
+instance=$(echo $@ | grep -E -o -e "-i .+" | awk '{printf("%s", $2)}')
+network_adapter=$(echo $@ | grep -E -o -e "-a .+" | awk '{printf("%s", $2)}')
 network_adapter=`(test $network_adapter && echo $network_adapter) || echo eth0`
 network=`test -d /sys/class/net/$network_adapter && echo 1`
 text=$(echo $@ | grep -c -e "--text")
-no_gpu=$(echo $@ | grep -e "--no-gpu")
+no_gpu=$(echo $@ | grep -o -e "--no-gpu")
 
 # paths
-icon=`realpath ~/.cache/sysmon`"/icon.svg"
-rc=$(realpath ~/.config/xfce4/panel/genmon-`cat ~/.local/share/sysmon/genmon.txt`.rc)
+icon=`realpath ~/.cache/sysmon`"/icon-$instance.svg"
+rc=$(realpath ~/.config/xfce4/panel/genmon-$instance.rc)
 
 # check update interval
-if (( `cat $rc | grep "UpdatePeriod" | grep -o -E -e "[0-9]*"` < 1500 )); then
+if [[ $instance ]] && (( `cat $rc | grep "UpdatePeriod" | grep -o -E -e "[0-9]*"` < 1500 )); then
     xfce4-panel --quit
     sed -i "s/^UpdatePeriod.*/UpdatePeriod=1500/" $rc
     xfce4-panel >/dev/null 2>/dev/null &
@@ -88,22 +89,24 @@ tx=`(test $network && human_bandwidth $(($tx2 - $tx1))) || echo " ?"`
 
 
 # create textual output
-text_out="<b>Network:</b> v$tx ^$rx <b>CPU:</b> $cpu% <b>GPU:</b> $gpu% <b>RAM:</b> $ram% <b>swap:</b> $swap%"
+gpu_text=$(test $no_gpu || echo "<b>GPU:</b> $gpu% ")
+text_out="<b>Network:</b> v$tx ^$rx <b>CPU:</b> $cpu% $gpu_text<b>RAM:</b> $ram% <b>swap:</b> $swap%"
 
 # create svg if requested
-if ! (( $text )); then
+if [[ $instance ]] && ! (( $text )); then
     color=$(if [[ $(xfconf-query -lvc xsettings -p /Net/ThemeName | grep -i "dark") ]]; then echo white; else echo black; fi)
     font=$(xfconf-query -lvc xsettings -p /Gtk/FontName | awk '{printf("%s", $2)}')
 
-    svg="<svg width=\"120\" height=\"30\" xmlns=\"http://www.w3.org/2000/svg\">"
+    svg="<svg width=\""`(test $no_gpu && echo 105) || echo 120`"\" height=\"30\" xmlns=\"http://www.w3.org/2000/svg\">"
     svg+="<g fill=\"$color\" font-size=\"12\" font-family=\"$font\">"
     svg+="<text x=\"0\" y=\"15\" textLength=\"50\" lengthAdjust=\"spacingAndGlyphs\">&#8593;$tx</text>"
     svg+="<text x=\"0\" y=\"28\" textLength=\"50\" lengthAdjust=\"spacingAndGlyphs\">&#8595;$rx</text>"
     svg+="</g>"
     svg+=`svg_bar 60 $cpu blue`
     svg+=`test $no_gpu || svg_bar 75 $gpu green`
-    svg+=`svg_bar 90 $ram orange`
-    svg+=`svg_bar 105 $swap yellow`
+    cursor=`(test $no_gpu && echo 75) || echo 90`
+    svg+=`svg_bar $cursor $ram orange`
+    svg+=`svg_bar $(($cursor + 15)) $swap yellow`
     svg+="</svg>"
     
     echo $svg > $icon

@@ -49,11 +49,10 @@ for g in `cd ~/.config/xfce4/panel/; ls -t genmon*.rc | grep -o -E -e "[0-9]+"`;
     fi
 done
 
-echo $genmon > ~/.local/share/sysmon/genmon.txt
 genmon_path=`realpath ~/.config/xfce4/panel/genmon-$genmon".rc"`
 script_path=`realpath ~/.local/share/sysmon/sysmon.sh`
 
-sed -i 's|^Command.*|Command='$script_path"$adapter"'|' $genmon_path
+sed -i 's|^Command.*|Command='$script_path" -i $genmon$adapter"'|' $genmon_path
 sed -i "s/^UseLabel.*/UseLabel=0/" $genmon_path
 sed -i "s/^Text.*/Text=/" $genmon_path
 sed -i "s/^UpdatePeriod.*/UpdatePeriod=3000/" $genmon_path

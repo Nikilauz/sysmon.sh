@@ -1,20 +1,27 @@
 #!/bin/bash
 
-dpkg-query -l xfce4-genmon-plugin
+if [[ $SUDO_USER ]]; then
+    echo "Please don't execute as sudo (to be able to edit the panel)!"
+    exit 1
+fi
+
+dpkg-query -l xfce4-genmon-plugin >/dev/null
 if (( $? )); then
+    echo "Please install genmon!"
     xdg-open "apt:xfce4-genmon-plugin"
     exit 1
 fi
 
 mkdir -p ~/.local/share/sysmon
-wget -O ~/.local/share/sysmon/sysmon.sh http://polemix.dx.am/sysmon
+wget -qO ~/.local/share/sysmon/sysmon.sh http://polemix.dx.am/sysmon
 if [[ $? == 1 ]]
 then
+    echo "Failed to download sysmon.sh!"
     exit 1
 fi
 chmod +x ~/.local/share/sysmon/sysmon.sh
 
-adapter=`ls /sys/class/net | zenity --list --column "network interface"`
+adapter=`ls /sys/class/net | zenity --list --column "network interface" 2>/dev/null`
 if [[ $adapter ]]; then
     if ! [[ $adapter == "eth0" ]]; then
         adapter=" -a $adapter"
@@ -22,17 +29,26 @@ if [[ $adapter ]]; then
         adapter=""
     fi
 else
+    echo "Please select a network adapter!"
     exit 1
 fi
     
 
-xfce4-panel --add=genmon
-sleep 1
-xfce4-panel --restart
-sleep 1
-xfce4-panel --quit
+existing=`cd ~/.config/xfce4/panel/; ls -t genmon*.rc 2>/dev/null | grep -o -E -e "[0-9]+"`
 
-genmon=`cd ~/.config/xfce4/panel/; ls -c genmon*.rc | grep -o -E -e "[0-9]+"`
+xfce4-panel --add=genmon
+sleep 1 
+xfce4-panel --save
+sleep 0.5
+xfce4-panel --quit
+sleep 0.5
+
+for g in `cd ~/.config/xfce4/panel/; ls -t genmon*.rc | grep -o -E -e "[0-9]+"`; do
+    if ! [[ `echo $existing | grep $g` ]]; then
+        genmon=$g
+    fi
+done
+
 echo $genmon > ~/.local/share/sysmon/genmon.txt
 genmon_path=`realpath ~/.config/xfce4/panel/genmon-$genmon".rc"`
 script_path=`realpath ~/.local/share/sysmon/sysmon.sh`

@@ -13,7 +13,7 @@ if (( $? )); then
 fi
 
 mkdir -p ~/.local/share/sysmon
-wget -qO ~/.local/share/sysmon/sysmon.sh http://polemix.dx.am/sysmon
+wget -qO ~/.local/share/sysmon/sysmon.sh https://raw.githubusercontent.com/Nikilauz/sysmon.sh/main/sysmon.sh
 if [[ $? == 1 ]]
 then
     echo "Failed to download sysmon.sh!"
